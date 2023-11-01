@@ -21,6 +21,7 @@ const Formlar = ({ veriler }) => {
     active: "",
   });
   const [formValid, setFormValid] = useState(true);
+  //   const [alinanVeri, setAlinanVeri] = useState([]);
   const changeHandler = (event) => {
     const { name, value, type, checked } = event.target;
 
@@ -45,14 +46,18 @@ const Formlar = ({ veriler }) => {
           console.log("Veri başarıyla gönderildi:", response.data);
 
           const gidenVeri = response.data;
-          console.log("giden veri : ", gidenVeri);
+          console.log("Post yapilan veri : ", gidenVeri);
+          axios.get("https://reqres.in/api/users").then((responseGet) => {
+            const alinanVeri = responseGet.data;
+            console.log("alinan veri", alinanVeri);
+          });
         })
         .catch((error) => {
           // İşlem sırasında bir hata olursa yapılacak işlemler
           console.error("Veri gönderilirken hata oluştu:", error);
         });
     }
-    veriler(formData);
+    // veriler(formData);
   };
 
   const formDataSchema = Yup.object().shape({
