@@ -4,17 +4,17 @@ import Formlar from "./components/Form";
 import { useEffect, useState } from "react";
 import axios from "axios";
 function App() {
-  const [gonderilenVeri, setGonderilenVeri] = useState([]);
+  const [kullanicilar, setKullanicilar] = useState([]);
 
-  const addMember = (formData) => {
-    setGonderilenVeri({ ...gonderilenVeri, formData });
+  const users = (formData) => {
+    setKullanicilar({ ...kullanicilar, formData });
   };
 
-  console.log("app.js, deki veriler", gonderilenVeri);
+  console.log("app.js, deki veriler", kullanicilar);
 
   return (
     <div className="App">
-      <Formlar veriler={addMember} />
+      <Formlar veriler={users} />
     </div>
   );
 }
