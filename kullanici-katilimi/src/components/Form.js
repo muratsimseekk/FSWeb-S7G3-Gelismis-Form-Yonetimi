@@ -48,7 +48,7 @@ const Formlar = ({ veriler }) => {
           const gidenVeri = response.data;
           console.log("Post yapilan veri : ", gidenVeri);
           axios.get("https://reqres.in/api/users").then((responseGet) => {
-            const alinanVeri = responseGet.data.data;
+            const alinanVeri = responseGet.data;
             console.log("alinan veri", alinanVeri);
           });
         })
