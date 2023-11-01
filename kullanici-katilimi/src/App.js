@@ -1,16 +1,20 @@
 import logo from "./logo.svg";
 import "./App.css";
 import Formlar from "./components/Form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 function App() {
-  const [kullaniciList, setKullaniciList] = useState([]);
-  const AddMember = (formData) => {
-    setKullaniciList(...AddMember, formData);
+  const [gonderilenVeri, setGonderilenVeri] = useState([]);
+
+  const addMember = (formData) => {
+    setGonderilenVeri({ ...gonderilenVeri, formData });
   };
+
+  console.log("app.js, deki veriler", gonderilenVeri);
 
   return (
     <div className="App">
-      <Formlar submitted={AddMember} />
+      <Formlar veriler={addMember} />
     </div>
   );
 }

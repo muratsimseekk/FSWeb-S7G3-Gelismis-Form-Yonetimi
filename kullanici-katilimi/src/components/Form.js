@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
+import Form from "react-bootstrap/Form";
+import FormGroup from "react-bootstrap/esm/FormGroup";
+import FormLabel from "react-bootstrap/esm/FormLabel";
+import InputGroup from "react-bootstrap/InputGroup";
+import axios from "axios";
 
-const Formlar = ({ submitted }) => {
+const Formlar = ({ veriler }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     password: "",
@@ -9,6 +14,13 @@ const Formlar = ({ submitted }) => {
     active: false,
   });
 
+  const [formlarErrors, setFormlarErrors] = useState({
+    fullName: "",
+    password: "",
+    mail: "",
+    active: "",
+  });
+  const [formValid, setFormValid] = useState(true);
   const changeHandler = (event) => {
     const { name, value, type, checked } = event.target;
 
@@ -16,8 +28,28 @@ const Formlar = ({ submitted }) => {
   };
   const submitHandler = (e) => {
     e.preventDefault();
-    submitted(formData);
     console.log("submit oldu mu ?", formData);
+    for (let key in formData) {
+      console.log(
+        "checkValidationFor(key, formData[key]) > ",
+        key,
+        formData[key]
+      );
+      checkValidationFor(key, formData[key]);
+    }
+    if (formValid) {
+      axios
+        .post("https://reqres.in/api/users", formData)
+        .then((response) => {
+          // İşlem başarılı olduğunda yapılacak işlemler
+          console.log("Veri başarıyla gönderildi:", response.data);
+        })
+        .catch((error) => {
+          // İşlem sırasında bir hata olursa yapılacak işlemler
+          console.error("Veri gönderilirken hata oluştu:", error);
+        });
+    }
+    veriler(formData);
   };
 
   const formDataSchema = Yup.object().shape({
@@ -30,68 +62,136 @@ const Formlar = ({ submitted }) => {
     mail: Yup.string()
       .required("This section can not be empty.")
       .email("Please enter valid mail address."),
-    active: Yup.boolean(),
+    active: Yup.boolean().oneOf([true], "Terms of Services must be accepted."),
   });
 
-  //   const inputChangeHandler = (e) => {
-  //     const { name, value, type, checked } = e.target;
-  //     setProduct({ ...product, [name]: type === "checkbox" ? checked : value });
+  useEffect(() => {
+    console.error("form error > ", formlarErrors);
+  }, [formlarErrors]);
 
-  //     checkValidationFor(name, type === "checkbox" ? checked : value);
-  //   };
-  console.log(formData);
+  useEffect(() => {
+    formData && setFormData(formData);
+  }, [formData]);
 
+  useEffect(() => {
+    console.log("product > ", formData);
+    formDataSchema.isValid(formData).then((valid) => setFormValid(valid));
+  }, [formData]);
+
+  const checkValidationFor = (field, value) => {
+    Yup.reach(formDataSchema, field)
+      .validate(value)
+      .then((valid) => {
+        setFormlarErrors({ ...formlarErrors, [field]: "" });
+      })
+      .catch((err) => {
+        console.log("HATA! ", field, err.errors[0]);
+
+        setFormlarErrors((prevFormErrors) => ({
+          ...prevFormErrors,
+          [field]: err.errors[0],
+        }));
+      });
+
+    /*
+    setFormErrors({ name: "", decription: "", img: "", price: "", name: "hata mesajı"});
+    setFormErrors({ name: "", decription: "", img: "", price: "", decription: "hata mesajı"});
+    setFormErrors({ name: "", decription: "", img: "", price: "", img: "hata mesajı"});
+    setFormErrors({ name: "", decription: "", img: "", price: "", price: "hata mesajı"});
+    */
+  };
+  if (formValid) {
+    // console.log("FORM SUBMIT EDİLDİ! ", e);
+    //todo: eğer yeni ürünse post, güncelleme ise put req yap
+    // const endpoint = `https://620d69fb20ac3a4eedc05e3a.mockapi.io/api/products${
+    //   reqType === "put" ? "/" + product.id : ""
+    // }`;
+    // axios[reqType](endpoint, product)
+    //   .then((res) => {
+    //     console.log("ürün başarıyla kaydedildi!");
+    //     fetchProducts().then(() => {
+    //       // fetch products bitti
+    //       history.push("/products");
+    //     });
+    //     // todo: redirect to products page
+    //   })
+    //   .catch((err) => {
+    //     console.error("Ürün kaydedilirken bir hata ile karşılaşıldı: ", err);
+    //   });
+  }
   return (
     <div>
       <h2>Membership Form:</h2>
-      <form onSubmit={(e) => submitHandler(e)}>
-        <label>
-          Full Name :
-          <input
+      <Form onSubmit={(e) => submitHandler(e)}>
+        <FormGroup className="mb-2">
+          <FormLabel>Full Name :</FormLabel>
+          <Form.Control
             type="text"
             name="fullName"
             value={formData.fullName}
             onChange={changeHandler}
+            isInvalid={!!formlarErrors.fullName}
           />
-        </label>
+          <Form.Control.Feedback className="fs-2" type="invalid">
+            {formlarErrors.fullName}
+          </Form.Control.Feedback>
+        </FormGroup>
         <br />
-        <label>
-          Password :
-          <input
+        <FormGroup className="mb-2">
+          <Form.Label>Password :</Form.Label>
+
+          <Form.Control
             type="password"
             name="password"
             value={formData.password}
             onChange={changeHandler}
+            isInvalid={!!formlarErrors.password}
           />
-        </label>
+          <Form.Control.Feedback type="invalid">
+            {formlarErrors.password}
+          </Form.Control.Feedback>
+        </FormGroup>
         <br />
-        <label>
-          E-mail :
-          <input
+        <FormGroup className="mb-2">
+          <Form.Label>E-mail :</Form.Label>
+
+          <Form.Control
             type="email"
             name="mail"
             value={formData.mail}
             onChange={changeHandler}
+            isInvalid={!!formlarErrors.mail}
           />
-        </label>
+          <Form.Control.Feedback tooltip type="invalid">
+            {formlarErrors.mail}
+          </Form.Control.Feedback>
+        </FormGroup>
         <br />
-        <label>
-          <input
+        <FormGroup className="mb-2">
+          <Form.Label>
+            I have read and agreed to the terms of services.
+          </Form.Label>
+
+          <Form.Control
             id="active"
             type="checkbox"
             name="active"
             checked={formData.active}
             onChange={changeHandler}
+            isInvalid={!!formlarErrors.active}
           />
-          I have read and agree to the terms of services.
-        </label>
+          <Form.Control.Feedback type="invalid">
+            {formlarErrors.active}
+          </Form.Control.Feedback>
+        </FormGroup>
+
         {/* id="active" type="checkbox" label="Aktif mi?" onChange=
         {inputChangeHandler}
         checked={product.active}
         name="active" */}
         <br />
         <button>Submit ! </button>
-      </form>
+      </Form>
     </div>
   );
 };
