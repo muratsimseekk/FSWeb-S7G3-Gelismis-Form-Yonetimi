@@ -31,11 +31,11 @@ const Formlar = ({ veriler }) => {
     e.preventDefault();
     console.log("submit oldu mu ?", formData);
     for (let key in formData) {
-      console.log(
-        "checkValidationFor(key, formData[key]) > ",
-        key,
-        formData[key]
-      );
+      //   console.log(
+      //     "checkValidationFor(key, formData[key]) > ",
+      //     key,
+      //     formData[key]
+      //   );
       checkValidationFor(key, formData[key]);
     }
     if (formValid) {
@@ -48,7 +48,7 @@ const Formlar = ({ veriler }) => {
           const gidenVeri = response.data;
           console.log("Post yapilan veri : ", gidenVeri);
           axios.get("https://reqres.in/api/users").then((responseGet) => {
-            const alinanVeri = responseGet.data;
+            const alinanVeri = responseGet.data.data;
             console.log("alinan veri", alinanVeri);
           });
         })
@@ -74,7 +74,7 @@ const Formlar = ({ veriler }) => {
   });
 
   useEffect(() => {
-    console.error("form error > ", formlarErrors);
+    // console.error("form error > ", formlarErrors);
   }, [formlarErrors]);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const Formlar = ({ veriler }) => {
   }, [formData]);
 
   useEffect(() => {
-    console.log("product > ", formData);
+    // console.log("product > ", formData);
     formDataSchema.isValid(formData).then((valid) => setFormValid(valid));
   }, [formData]);
 
@@ -108,25 +108,7 @@ const Formlar = ({ veriler }) => {
     setFormErrors({ name: "", decription: "", img: "", price: "", price: "hata mesajı"});
     */
   };
-  if (formValid) {
-    // console.log("FORM SUBMIT EDİLDİ! ", e);
-    //todo: eğer yeni ürünse post, güncelleme ise put req yap
-    // const endpoint = `https://620d69fb20ac3a4eedc05e3a.mockapi.io/api/products${
-    //   reqType === "put" ? "/" + product.id : ""
-    // }`;
-    // axios[reqType](endpoint, product)
-    //   .then((res) => {
-    //     console.log("ürün başarıyla kaydedildi!");
-    //     fetchProducts().then(() => {
-    //       // fetch products bitti
-    //       history.push("/products");
-    //     });
-    //     // todo: redirect to products page
-    //   })
-    //   .catch((err) => {
-    //     console.error("Ürün kaydedilirken bir hata ile karşılaşıldı: ", err);
-    //   });
-  }
+
   return (
     <div>
       <h2>Membership Form:</h2>
@@ -170,7 +152,7 @@ const Formlar = ({ veriler }) => {
             onChange={changeHandler}
             isInvalid={!!formlarErrors.mail}
           />
-          <Form.Control.Feedback tooltip type="invalid">
+          <Form.Control.Feedback type="invalid">
             {formlarErrors.mail}
           </Form.Control.Feedback>
         </FormGroup>
