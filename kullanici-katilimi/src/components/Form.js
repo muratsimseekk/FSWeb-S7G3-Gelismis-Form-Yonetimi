@@ -43,6 +43,9 @@ const Formlar = ({ veriler }) => {
         .then((response) => {
           // İşlem başarılı olduğunda yapılacak işlemler
           console.log("Veri başarıyla gönderildi:", response.data);
+
+          const gidenVeri = response.data;
+          console.log("giden veri : ", gidenVeri);
         })
         .catch((error) => {
           // İşlem sırasında bir hata olursa yapılacak işlemler
