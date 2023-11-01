@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import * as Yup from "yup";
 
-const Formlar = () => {
+const Formlar = ({ submitted }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     password: "",
@@ -15,9 +16,23 @@ const Formlar = () => {
   };
   const submitHandler = (e) => {
     e.preventDefault();
-
+    submitted(formData);
     console.log("submit oldu mu ?", formData);
   };
+
+  const formDataSchema = Yup.object().shape({
+    fullName: Yup.string()
+      .required("This section can not be empty.")
+      .min(3, "Can not be less than 3 characters."),
+    password: Yup.string()
+      .required("Password is necessary.")
+      .min(8, "Minumum 8 character."),
+    mail: Yup.string()
+      .required("This section can not be empty.")
+      .email("Please enter valid mail address."),
+    active: Yup.boolean(),
+  });
+
   //   const inputChangeHandler = (e) => {
   //     const { name, value, type, checked } = e.target;
   //     setProduct({ ...product, [name]: type === "checkbox" ? checked : value });
