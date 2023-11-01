@@ -21,7 +21,9 @@ const Formlar = ({ veriler }) => {
     active: "",
   });
   const [formValid, setFormValid] = useState(true);
-  //   const [alinanVeri, setAlinanVeri] = useState([]);
+  const [alinanVeri, setAlinanVeri] = useState([]);
+
+  const jsonString = JSON.stringify(alinanVeri);
   const changeHandler = (event) => {
     const { name, value, type, checked } = event.target;
 
@@ -48,7 +50,7 @@ const Formlar = ({ veriler }) => {
           const gidenVeri = response.data;
           console.log("Post yapilan veri : ", gidenVeri);
           axios.get("https://reqres.in/api/users").then((responseGet) => {
-            const alinanVeri = responseGet.data;
+            setAlinanVeri(responseGet.data);
             console.log("alinan veri", alinanVeri);
           });
         })
@@ -182,6 +184,9 @@ const Formlar = ({ veriler }) => {
         <br />
         <button>Submit ! </button>
       </Form>
+      <div>
+        <pre>{jsonString}</pre>
+      </div>
     </div>
   );
 };
